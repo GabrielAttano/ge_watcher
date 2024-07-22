@@ -74,7 +74,7 @@ class GrandExchangeApi:
         if response.status_code == 200:
             return response.json()
         
-    def map_selected_items(self, latest: dict) -> list:
+    def map_selected_items(self) -> list:
         print("=> Mapeando itens selecionados.")
         
         selected_items = self.ge_watcher.get_items_to_watch()
@@ -82,9 +82,14 @@ class GrandExchangeApi:
             print("Erro ao consultar itens selecionados.")
             return
         
+        latest = self.get_latest()
+        if latest == None:
+            print("Erro na consulta de latest.")
+            return
+        
         mapping = self.get_mapping()
         if mapping == None:
-            print("Erro na consulta de mapping dos itens.")
+            print("Erro na consulta de mapping.")
             return
         
         items = list()
@@ -97,9 +102,3 @@ class GrandExchangeApi:
                 item.set_latest_attributes(latestAux)
                 items.append(item)
         return items
-            
-geApi = GrandExchangeApi()
-latest = geApi.get_latest()
-items = geApi.map_selected_items(latest)
-item: Item = items[0]
-print(item)
