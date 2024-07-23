@@ -22,6 +22,7 @@ Thumbs.db
 # Ignore database files
 *.sqlite3
 *.db
+*.csv
 
 # Ignore environment files
 .env
