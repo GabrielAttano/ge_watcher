@@ -1,4 +1,4 @@
-from src.api.model.prices_runescape import MappingResponseData, LatestResponseData
+from src.api.model.prices_runescape import MappingResponse, LatestResponse, TimeSeriesResponse
 
 import requests
 import os
@@ -15,7 +15,7 @@ class GrandExchangeApi:
         }
         
 
-    def get_mapping(self) -> MappingResponseData | None:
+    def get_mapping(self) -> MappingResponse | None:
         URL = GrandExchangeApi.BASE_URL + "mapping"
         print(f"=> Consulta de mapping. Url: '{URL}'")
 
@@ -23,10 +23,10 @@ class GrandExchangeApi:
         print(f'Status: {str(response.status_code)}')
         if response.status_code == 200:
             data = response.json()
-            mapping_response = MappingResponseData(itemsData=data)
+            mapping_response = MappingResponse(itemsData=data)
             return mapping_response
 
-    def get_latest(self) -> LatestResponseData | None:
+    def get_latest(self) -> LatestResponse | None:
         URL = GrandExchangeApi.BASE_URL + "latest"
         print(f"=> Consulta de latest. Url: '{URL}'")
 
@@ -34,5 +34,24 @@ class GrandExchangeApi:
         print(f'Status: {str(response.status_code)}')
         if response.status_code == 200:
             data = response.json()
-            latestResponseData = LatestResponseData(**data)
-            return latestResponseData
+            latest_response = LatestResponse(**data)
+            return latest_response
+
+    def get_timeseries(self, id: str) -> TimeSeriesResponse | None:
+        URL = GrandExchangeApi.BASE_URL + "timeseries"
+        params = {
+            "timestep": "5m",
+            "id": id
+        }
+        print(f"=> Consulta de timeseries. Url: '{URL}' | params: '{params}'")
+
+        response = requests.get(URL, headers=self.headers, params=params)
+        if response.status_code == 200:
+            data = response.json()
+            timeseries_response = TimeSeriesResponse(data=data["data"], itemId=data["itemId"])
+            return timeseries_response
+
+if __name__ == "__main__":
+    ge_api = GrandExchangeApi()
+    timeseries_response = ge_api.get_timeseries("1127")
+    print(timeseries_response.data[0])

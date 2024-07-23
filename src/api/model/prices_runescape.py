@@ -12,7 +12,7 @@ class ItemData(BaseModel):
     highalch: Optional[int] = None
     value: int
 
-class MappingResponseData(BaseModel):
+class MappingResponse(BaseModel):
     itemsData: List[ItemData]
 
 class ItemPriceData(BaseModel):
@@ -21,6 +21,17 @@ class ItemPriceData(BaseModel):
     low: int | None = None
     lowTime: int | None = None
 
-class LatestResponseData(BaseModel):
+class LatestResponse(BaseModel):
     data: dict[str, ItemPriceData]
+
+class itemTimeseriesData(BaseModel):
+    timestamp: int
+    avgHighPrice: int | None = None
+    avgLowPrice: int | None = None
+    highPriceVolume: int
+    lowPriceVolume: int
+
+class TimeSeriesResponse(BaseModel):
+    data: List[itemTimeseriesData]
+    itemId: int
     
